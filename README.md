@@ -73,7 +73,7 @@ Results:
 | Frozen Feature Extractor | 1,026 | 12.7 s | 86.50% |
 | Fine-Tuned Network | 8,394,754 | 10.9 s | 94.10% |
 
-![Training loss](training_loss.png)
+![Training loss]
 
 Discussion:
 Fine-tuning reached 94.10% test accuracy compared with 86.50% for the frozen feature extractor, an improvement of 7.6 percentage points. The frozen model keeps the ImageNet features unchanged and only learns a new classifier on top, while fine-tuning lets the last convolutional block adapt its high-level features to airplane and ship images. The fine-tuned model trains 8,394,754 parameters versus only 1,026, so in theory it should take longer per epoch, since gradients must flow back through `layer4` and its weights must be updated. In my run the fine-tuned model was slightly faster (10.9 s vs. 12.7 s), which I believe comes from one-time overhead (GPU initialization, data caching) during the first, frozen run, and from data loading taking a large share of each epoch on a small dataset. In general, freezing layers reduces memory use and backward-pass computation and lowers the risk of overfitting, while fine-tuning costs more compute but usually gives better accuracy when the new data differs from ImageNet. For this task, the extra trainable parameters were clearly worth it.
